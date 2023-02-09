@@ -1,23 +1,74 @@
-<script setup>
-import Bezier from './components/Bezier.vue';
-
-import EasingCategory from './components/EasingCategory.vue';
-import EasingType from './components/EasingType.vue';
-import View from './components/View.vue';
-</script>
-
 <template>
   <div class="wrapper">
     <div class="inner">
       <View />
       <div class="flex">
-        <EasingCategory />
+        <button @click="helloFromChild">親コンポーネント</button>
+        <EasingList
+          ref="child"
+          @childEmit="helloFromParent"
+          @switchEasing="helloFromSwitch"
+        />
         <Bezier />
       </div>
-      <EasingType />
+      <EasingSwitch />
+      <p>テスト</p>
     </div>
   </div>
 </template>
+
+<script>
+import Bezier from '@/components/Bezier.vue';
+
+import EasingList from '@/components/EasingList.vue';
+import View from '@/components/View.vue';
+import EasingSwitch from '@/components/EasingSwitch.vue';
+import easingList from '@/constants/easingList.js';
+import { ref, defineComponent } from 'vue';
+
+export default defineComponent({
+  components: {
+    Bezier,
+    EasingList,
+    EasingSwitch,
+    View,
+  },
+  setup(props, { emit }) {
+    const child = ref(null);
+
+    const defaultEasingName = Object.keys(easingList.easeInOut[0]);
+    const defaultEasingPoints = [...Object.values(easingList.easeInOut[0])][0];
+    // console.log(defaultEasingName[0]);
+    // console.log(defaultEasingPoints);
+
+    const helloFromParent = () => {
+      console.log('Hello from Parent!');
+    };
+    const helloFromSwitch = (index) => {
+      console.log(index);
+    };
+
+    const helloFromChild = () => {
+      child.value.helloFromChild();
+    };
+
+    return {
+      child,
+      helloFromParent,
+      helloFromChild,
+      helloFromSwitch,
+      defaultEasingName,
+      defaultEasingPoints,
+    };
+  },
+});
+
+// Object.keys(easingList).forEach((key) => {
+//   easingList[key].forEach((elm) => {
+//     console.log(elm);
+//   });
+// });
+</script>
 
 <style scoped>
 .wrapper {

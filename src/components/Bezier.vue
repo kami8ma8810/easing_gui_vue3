@@ -5,7 +5,26 @@ const COLOR_STROKE = '#222222';
 const COLOR_PRIMARY = '#c44fd8';
 const COLOR_INFO = 'rgba(0,0,0,0.1)';
 
-// ベジェ曲線のコンストラクタ設定
+// 左下原点のcanvasに変換
+// const initialCanvas = (id) => {
+//   const originX = 0;
+//   const originY = 100;
+
+//   const canvas = document.getElementById(id);
+//   const { width, height } = canvas;
+
+//   const ctx = canvas.getContext('2d');
+
+//   ctx.translate(originX, height - originY);
+//   ctx.scale(1, -1);
+//   // x,y軸を描画
+//   line(ctx, originX * -1, 0, width - originX, 0, 1, 'black');
+//   line(ctx, 0, originY * -1, 0, height - originY, 1, 'black');
+
+//   return ctx;
+// };
+
+// ベジェ曲線クラス
 function BezierCurve(points) {
   this.points = [
     points[0], //始点
@@ -20,6 +39,7 @@ function BezierCurve(points) {
   this.movingPoint = -1;
 }
 
+// 描画の処理
 BezierCurve.prototype.draw = function (ctx, mouse) {
   // 点を移動中
   if (this.movingPoint > -1) {
@@ -32,14 +52,14 @@ BezierCurve.prototype.draw = function (ctx, mouse) {
   }
   // 始点と終点の背景線を描画
   ctx.beginPath();
-  ctx.moveTo(100, 400);
+  ctx.moveTo(0, 500);
   ctx.lineTo(400, 100);
   ctx.strokeStyle = COLOR_INFO;
   ctx.lineWidth = 4;
   ctx.stroke();
 
   // 制御点のハンドルを描画
-  for (var i = 0; i < 2; i++) {
+  for (let i = 0; i < 2; i++) {
     ctx.beginPath();
     ctx.moveTo(this.points[i + 0][0], this.points[i + 0][1]);
     ctx.lineTo(this.points[i + 2][0], this.points[i + 2][1]);
@@ -52,19 +72,19 @@ BezierCurve.prototype.draw = function (ctx, mouse) {
   ctx.beginPath();
   ctx.moveTo(this.points[0][0], this.points[0][1]);
   ctx.bezierCurveTo(
-    this.points[2][0],
-    this.points[2][1],
-    this.points[3][0],
-    this.points[3][1],
-    this.points[1][0],
-    this.points[1][1]
+    this.points[2][0], //制御点1のx座標
+    this.points[2][1], //制御点1のy座標
+    this.points[3][0], //制御点2のx座標
+    this.points[3][1], //制御点2のy座標
+    this.points[1][0], //追加点x座標
+    this.points[1][1] //追加点y座標
   );
   ctx.strokeStyle = this.strokeStyle;
   ctx.lineWidth = this.lineWidth;
   ctx.stroke();
 
   // 制御点の〇を描画
-  for (var i = 2; i <= 3; i++) {
+  for (let i = 2; i <= 3; i++) {
     ctx.beginPath();
     ctx.arc(this.points[i][0], this.points[i][1], 10, 0, Math.PI * 2, false);
     ctx.fillStyle = this.pointColors[i];
@@ -78,10 +98,31 @@ BezierCurve.prototype.draw = function (ctx, mouse) {
   }
 };
 
+// 小数点以下を2桁までにする関数
+const roundToTwo = (num) => {
+  return +(Math.round(num + 'e+2') + 'e-2');
+};
+const recalc = (num) => {
+  return num;
+};
+
+// console.log(recalc(400));
+// 0-1の数値に変換する関数
+// const recalcArray = (array) => {
+//   return (
+// 		array.map((val,index,array)=>{
+
+// 	})
+// 	);
+// };
+
+// 制御点情報
+const handle = { x1: 0, y1: 0, x2: 0, y2: 0 };
+
 BezierCurve.prototype.hitTest = function (mouse) {
   this.selectedPoint = -1;
   // 各点との当たり判定
-  var hitTestP = function (mousePoint, origin, radius) {
+  const hitTestP = function (mousePoint, origin, radius) {
     if (
       mouse.x >= origin[0] - radius &&
       mouse.x <= origin[0] + radius &&
@@ -93,13 +134,20 @@ BezierCurve.prototype.hitTest = function (mouse) {
       return false;
     }
   };
+
   // 制御点のみ動かせるようにする
-  for (var i = 2; i <= 3; i++) {
+  for (let i = 2; i <= 3; i++) {
     if (hitTestP(mouse, this.points[i], 10)) {
       this.selectedPoint = i;
       if (mouse.down) {
         // マウスクリック中は移動モードにする
         this.movingPoint = i;
+        // 制御点の情報を出力する
+        handle.x1 = this.points[2][0];
+        handle.y1 = this.points[2][1];
+        handle.x2 = this.points[3][0];
+        handle.y2 = this.points[3][1];
+        console.log(handle);
       }
       return true;
     }
@@ -108,16 +156,17 @@ BezierCurve.prototype.hitTest = function (mouse) {
 };
 
 // マウス情報
-var mouse = { x: 0, y: 0, down: false };
+const mouse = { x: 0, y: 0, down: false };
 
-var init = () => {
-  var canvas = document.getElementById('bezier_canvas');
+const initCanvas = (id) => {
+  const canvas = document.getElementById(id);
   if (!canvas || !canvas.getContext) {
     return false;
   }
-  var ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d');
+
   canvas.onmousemove = function (e) {
-    var rect = e.target.getBoundingClientRect();
+    const rect = e.target.getBoundingClientRect();
     mouse.x = e.clientX - rect.left;
     mouse.y = e.clientY - rect.top;
   };
@@ -131,34 +180,44 @@ var init = () => {
     mouse.down = false;
   };
 
-  // ベジェ曲線と制御点のインスタンス
-  var bezierField = new BezierCurve([
-    [100, 400], //始点
-    [260, 400], //始点の制御点
-    [240, 100], //終点の制御点
+  // 初期化
+  const bezierField = new BezierCurve([
+    [0, 500], //始点
+    [340, 320], //始点の制御点
+    [140, 160], //終点の制御点
     [400, 100], //終点
   ]);
 
-  var timer;
-  var loop = function () {
+  // メインループ
+  let timer;
+  let loop = function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     bezierField.hitTest(mouse);
     bezierField.draw(ctx, mouse);
+
+    //マウス位置デバッグ
+    // ctx.fillText(mouse.x + ', ' + mouse.y, 10, 10);
+
+    //制御点デバッグ
+    // ctx.fillText(
+    //   `${handle.x1}, ${handle.y1}, ${handle.x2}, ${handle.y2}, `,
+    //   10,
+    //   10
+    // );
     clearTimeout(timer);
     timer = setTimeout(loop, 10);
   };
   loop();
 };
 
-// 実行関数
 onMounted(() => {
-  window.onload = () => init();
+  window.onload = () => initCanvas('bezier_canvas');
 });
 </script>
 
 <template>
   <div class="container">
-    <canvas id="bezier_canvas" width="500" height="500"></canvas>
+    <canvas id="bezier_canvas" width="400" height="600"></canvas>
   </div>
 </template>
 
