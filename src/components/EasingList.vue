@@ -10,7 +10,7 @@
         <img :src="generateImgPath(item)" :alt="item" />
       </li>
     </ul>
-    <button @click="emitEvent">Emit!</button>
+    <!-- <button @click="emitEvent">Emit!</button> -->
   </div>
 </template>
 <script>

@@ -7,7 +7,7 @@
         <EasingList
           ref="child"
           @childEmit="helloFromParent"
-          @switchEasing="helloFromSwitch"
+          @switchEasing="setEasing"
         />
         <Bezier />
       </div>
@@ -23,7 +23,7 @@ import Bezier from '@/components/Bezier.vue';
 import EasingList from '@/components/EasingList.vue';
 import View from '@/components/View.vue';
 import EasingSwitch from '@/components/EasingSwitch.vue';
-import easingList from '@/constants/easingList.js';
+import easingLists from '@/constants/easingLists.js';
 import { ref, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -35,17 +35,37 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const child = ref(null);
+    const defaultEasingTypeName = ref(Object.keys(easingLists[0][0])); //'ease-in-out'
+    const defaultEasingPoints = ref(...Object.values(easingLists[0][0])); // [0.42, 0.0, 0.58, 1.0]
 
-    const defaultEasingName = Object.keys(easingList.easeInOut[0]);
-    const defaultEasingPoints = [...Object.values(easingList.easeInOut[0])][0];
-    // console.log(defaultEasingName[0]);
-    // console.log(defaultEasingPoints);
+    // ease-in-out/ease-in/ease-out のタイプを子コンポーネントのクリックイベントから取得
+    const getEasingType = (index) => {
+      const currentEasingType = Object.keys(easingLists[index][0]).shift();
+      return currentEasingType;
+    };
+    const getEasingPoints = (index) => {
+      const currentEasingPoints = [
+        ...Object.values(easingLists[index][0]),
+      ].shift();
+      return currentEasingPoints;
+    };
+
+    // 現在のイージングに設定
+    const setEasingName = (index) => {
+      defaultEasingTypeName.value = getEasingType(index);
+      console.log(defaultEasingTypeName.value);
+    };
+    const setEasingPoints = (index) => {
+      defaultEasingPoints.value = getEasingPoints(index);
+      console.log(defaultEasingPoints.value);
+    };
+    const setEasing = (index) => {
+      setEasingName(index);
+      setEasingPoints(index);
+    };
 
     const helloFromParent = () => {
       console.log('Hello from Parent!');
-    };
-    const helloFromSwitch = (index) => {
-      console.log(index);
     };
 
     const helloFromChild = () => {
@@ -56,18 +76,16 @@ export default defineComponent({
       child,
       helloFromParent,
       helloFromChild,
-      helloFromSwitch,
-      defaultEasingName,
+      getEasingType,
+      getEasingPoints,
+      defaultEasingTypeName,
       defaultEasingPoints,
+      setEasing,
+      setEasingName,
+      setEasingPoints,
     };
   },
 });
-
-// Object.keys(easingList).forEach((key) => {
-//   easingList[key].forEach((elm) => {
-//     console.log(elm);
-//   });
-// });
 </script>
 
 <style scoped>
