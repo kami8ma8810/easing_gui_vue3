@@ -47,6 +47,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style scoped>
 .container {
   /* display: flex;

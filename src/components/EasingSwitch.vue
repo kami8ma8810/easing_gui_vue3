@@ -1,13 +1,21 @@
-<script setup></script>
 <template>
   <div class="container">
     <div class="inner">
       <button class="btn"><span class="btn-arrow btn-prev"></span></button>
-      <p class="easing-name">ease-in-out</p>
+      <p class="easing-name">{{ easingType }}</p>
       <button class="btn"><span class="btn-arrow btn-next"></span></button>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    easingType: String,
+  },
+};
+</script>
+
 <style scoped>
 .container {
   width: 100%;
