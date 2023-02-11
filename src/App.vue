@@ -19,7 +19,7 @@ import Bezier from '@/components/Bezier.vue';
 import EasingList from '@/components/EasingList.vue';
 import View from '@/components/View.vue';
 import EasingSwitch from '@/components/EasingSwitch.vue';
-import easingLists from '@/constants/easingLists.js';
+import easingList from '@/constants/easingList.js';
 import { ref, reactive, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -30,26 +30,26 @@ export default defineComponent({
     View,
   },
   setup(props, { emit }) {
-    const defaultEasingType = ref(easingLists[0]);
-    const defaultEasingName = ref(Object.keys(easingLists[0][0])[0]);
-    const defaultEasingPoints = ref(Object.values(easingLists[0][0])[0]);
+    const defaultEasingType = ref(easingList[0]);
+    const defaultEasingName = ref(Object.keys(easingList[0][0])[0]);
+    const defaultEasingPoints = ref(Object.values(easingList[0][0])[0]);
 
     // const defaultEasing = reactive({
-    //   type: Object.keys(easingLists[0][0]).shift(),
-    //   points: [...Object.values(easingLists[0][0])],
+    //   type: Object.keys(easingList[0][0]).shift(),
+    //   points: [...Object.values(easingList[0][0])],
     // });
 
     // ease-in-out/ease-in/ease-out のタイプを子コンポーネントのクリックイベントから取得
     const getEasingType = (index) => {
-      const currentEasingType = easingLists[index];
+      const currentEasingType = easingList[index];
       return currentEasingType;
     };
     const getEasingName = (index) => {
-      const currentEasingName = Object.keys(easingLists[index][0])[0];
+      const currentEasingName = Object.keys(easingList[index][0])[0];
       return currentEasingName;
     };
     const getEasingPoints = (index) => {
-      const currentEasingPoints = Object.values(easingLists[index][0])[0];
+      const currentEasingPoints = Object.values(easingList[index][0])[0];
       return currentEasingPoints;
     };
 

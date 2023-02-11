@@ -201,13 +201,13 @@ const initCanvas = (id) => {
 };
 
 onMounted(() => {
-  window.onload = () => initCanvas('bezier_canvas');
+  window.onload = () => initCanvas('canvas');
 });
 </script>
 
 <template>
   <div class="container">
-    <canvas id="bezier_canvas" width="400" height="600"></canvas>
+    <canvas id="canvas" width="400" height="600"></canvas>
   </div>
 </template>
 

@@ -27,5 +27,4 @@ const easeOutList = [
 
 const easingLists = [easeInOutList, easeInList, easeOutList];
 
-// Object.freezeを使用して外部では書き換えできないようにする
 export default Object.freeze(easingLists);
