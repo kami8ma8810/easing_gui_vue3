@@ -39,13 +39,18 @@ export default defineComponent({
 
 <style scoped>
 .container {
+  margin-top: 40px;
   width: 100%;
-  height: 100px;
+  font-size: 24px;
 }
 .inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.easing-name {
+  margin: 0;
 }
 
 .btn {
@@ -57,7 +62,11 @@ export default defineComponent({
 
 @media (hover: hover) {
   .btn {
-    transition: background 0.1s ease-out;
+    transition: all 0.1s ease-out;
+  }
+  .btn:active {
+    filter: invert(1);
+    transform: scale(1.1);
   }
   .btn:hover {
     background-color: rgba(220, 220, 220, 0.6);

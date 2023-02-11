@@ -5,25 +5,6 @@ const COLOR_STROKE = '#222222';
 const COLOR_PRIMARY = '#c44fd8';
 const COLOR_INFO = 'rgba(0,0,0,0.1)';
 
-// 左下原点のcanvasに変換
-// const initialCanvas = (id) => {
-//   const originX = 0;
-//   const originY = 100;
-
-//   const canvas = document.getElementById(id);
-//   const { width, height } = canvas;
-
-//   const ctx = canvas.getContext('2d');
-
-//   ctx.translate(originX, height - originY);
-//   ctx.scale(1, -1);
-//   // x,y軸を描画
-//   line(ctx, originX * -1, 0, width - originX, 0, 1, 'black');
-//   line(ctx, 0, originY * -1, 0, height - originY, 1, 'black');
-
-//   return ctx;
-// };
-
 // ベジェ曲線クラス
 function BezierCurve(points) {
   this.points = [
@@ -98,16 +79,9 @@ BezierCurve.prototype.draw = function (ctx, mouse) {
   }
 };
 
-// 小数点以下を2桁までにする関数
-// const roundToTwo = (num) => {
-//   return +(Math.round(num + 'e+2') + 'e-2');
-// };
-// const recalc = (num) => {
-//   return num;
-// };
-
 // 制御点情報
-const handle = { x1: 0, y1: 0, x2: 0, y2: 0 };
+// let handlePoints = { x1: 168, y1: 500, x2: 232, y2: 100 };
+// let { x1, y1, x2, y2 } = handlePoints;
 
 BezierCurve.prototype.hitTest = function (mouse) {
   this.selectedPoint = -1;
@@ -133,11 +107,11 @@ BezierCurve.prototype.hitTest = function (mouse) {
         // マウスクリック中は移動モードにする
         this.movingPoint = i;
         // 制御点の情報を出力する
-        handle.x1 = this.points[2][0];
-        handle.y1 = this.points[2][1];
-        handle.x2 = this.points[3][0];
-        handle.y2 = this.points[3][1];
-        console.log(handle);
+        // handlePoints.x1 = this.points[2][0];
+        // handlePoints.y1 = this.points[2][1];
+        // handlePoints.x2 = this.points[3][0];
+        // handlePoints.y2 = this.points[3][1];
+        // console.log(handlePoints);
       }
       return true;
     }
@@ -147,6 +121,14 @@ BezierCurve.prototype.hitTest = function (mouse) {
 
 // マウス情報
 const mouse = { x: 0, y: 0, down: false };
+
+// 制御点情報
+let zeroOneEasing = [0.42, 0.0, 0.58, 1.0]; //初期イージング（ease-in-out）
+// 0-1のイージング数値をcanvas軸の数値に変換する（小数点以下切り捨て）
+const canvasEasing = zeroOneEasing.map((value, index) => {
+  return index % 2 === 0 ? (value * 400) | 0 : -((400 / value) | 0) + 500;
+});
+let [x1, y1, x2, y2] = canvasEasing;
 
 const initCanvas = (id) => {
   const canvas = document.getElementById(id);
@@ -171,10 +153,16 @@ const initCanvas = (id) => {
   };
 
   // 初期化
+  // const bezierField = new BezierCurve([
+  //   [0, 500],//始点
+  //   [168, 500],//始点の制御点
+  //   [232, 100],//終点の制御点
+  //   [400, 100], //終点
+  // ]);
   const bezierField = new BezierCurve([
     [0, 500], //始点
-    [168, 500], //始点の制御点
-    [232, 100], //終点の制御点
+    [x1, y1], //始点の制御点
+    [x2, y2], //終点の制御点
     [400, 100], //終点
   ]);
 
@@ -190,7 +178,7 @@ const initCanvas = (id) => {
 
     //制御点デバッグ
     // ctx.fillText(
-    //   `${handle.x1}, ${handle.y1}, ${handle.x2}, ${handle.y2}, `,
+    //   `${handlePoints.x1}, ${handlePoints.y1}, ${handlePoints.x2}, ${handlePoints.y2}, `,
     //   10,
     //   10
     // );
