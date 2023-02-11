@@ -1,19 +1,40 @@
 <template>
   <div class="container">
     <div class="inner">
-      <button class="btn"><span class="btn-arrow btn-prev"></span></button>
-      <p class="easing-name">{{ easingType }}</p>
-      <button class="btn"><span class="btn-arrow btn-next"></span></button>
+      <button class="btn" @click="onClickButton('prev')">
+        <span class="btn-arrow btn-prev"></span>
+      </button>
+      <p class="easing-name">{{ easingName }}</p>
+      <button class="btn" @click="onClickButton('next')">
+        <span class="btn-arrow btn-next"></span>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { computed, defineComponent } from 'vue';
+
+export default defineComponent({
   props: {
-    easingType: String,
+    defaultEasingType: Array,
   },
-};
+  emits: ['switchEasingChild'],
+  setup(props, { emit }) {
+    const easingName = computed(
+      () => Object.keys(props.defaultEasingType[0])[0]
+    );
+
+    const onClickButton = (direction) => {
+      emit('switchEasingChild', direction);
+    };
+
+    return {
+      easingName,
+      onClickButton,
+    };
+  },
+});
 </script>
 
 <style scoped>

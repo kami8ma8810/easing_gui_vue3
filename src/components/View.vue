@@ -10,9 +10,8 @@ onMounted(() => {
   const containerWidth = container.clientWidth;
   const circle = document.querySelector('.circle');
   const circleWidth = circle.clientWidth;
-  // 〇にイージングをセットする
-  setEasingType(circle, 'cubic-bezier(0.68, -0.6, 0.32, 1.6)');
-  //コンテナの幅から丸の幅を引いた分だけ移動させる
+
+  setEasingType(circle, 'cubic-bezier(0.42, 0.0, 0.58, 1.0)');
   circle.style.transform = `translateX(calc(${containerWidth}px - ${circleWidth}px))`;
 });
 </script>

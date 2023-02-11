@@ -3,22 +3,19 @@
     <div class="inner">
       <View />
       <div class="flex">
-        <!-- <button @click="helloFromChild">親コンポーネント</button> -->
-        <EasingList
-          ref="child"
-          @childEmit="helloFromParent"
-          @switchEasing="setEasing"
-        />
+        <EasingList @switchEasingCategory="setEasing" />
         <Bezier />
       </div>
-      <EasingSwitch :easingType="defaultEasingType" />
+      <EasingSwitch
+        :defaultEasingType="defaultEasingType"
+        @switchEasingChild="switchEasingChild"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import Bezier from '@/components/Bezier.vue';
-
 import EasingList from '@/components/EasingList.vue';
 import View from '@/components/View.vue';
 import EasingSwitch from '@/components/EasingSwitch.vue';
@@ -33,20 +30,25 @@ export default defineComponent({
     View,
   },
   setup(props, { emit }) {
-    const child = ref(null);
-    const defaultEasingType = ref(Object.keys(easingLists[0][0])[0]); //String 'ease-in-out'
-    const defaultEasingPoints = ref(Object.values(easingLists[0][0])[0]); // Array [0.42, 0.0, 0.58, 1.0]
-    // console.log(defaultEasingPoints.value, typeof defaultEasingPoints.value);
+    const defaultEasingType = ref(easingLists[0]);
+    const defaultEasingName = ref(Object.keys(easingLists[0][0])[0]);
+    const defaultEasingPoints = ref(Object.values(easingLists[0][0])[0]);
+
     // const defaultEasing = reactive({
     //   type: Object.keys(easingLists[0][0]).shift(),
     //   points: [...Object.values(easingLists[0][0])],
     // });
-    // console.log(defaultEasing.type);
 
     // ease-in-out/ease-in/ease-out のタイプを子コンポーネントのクリックイベントから取得
-    const getEasingType = (index) => {
-      const currentEasingType = Object.keys(easingLists[index][0])[0];
+    const getEasingType = (index, item) => {
+      console.log(index);
+      console.log(item);
+      const currentEasingType = easingLists[index];
       return currentEasingType;
+    };
+    const getEasingName = (index) => {
+      const currentEasingName = Object.keys(easingLists[index][0])[0];
+      return currentEasingName;
     };
     const getEasingPoints = (index) => {
       const currentEasingPoints = Object.values(easingLists[index][0])[0];
@@ -54,40 +56,41 @@ export default defineComponent({
     };
 
     // 現在のイージングに設定
-    const setEasingName = (index) => {
+    const setEasingType = (index) => {
       defaultEasingType.value = getEasingType(index);
-      console.log(defaultEasingType.value);
+    };
+    const setEasingName = (index) => {
+      defaultEasingName.value = getEasingName(index);
+      // console.log(defaultEasingName.value);
     };
     const setEasingPoints = (index) => {
       defaultEasingPoints.value = getEasingPoints(index);
-      console.log(defaultEasingPoints.value);
+      // console.log(defaultEasingPoints.value);
     };
     const setEasing = (index) => {
+      setEasingType(index);
       setEasingName(index);
       setEasingPoints(index);
     };
 
-    const helloFromParent = () => {
-      console.log('Hello from Parent!');
-    };
-
-    const helloFromChild = () => {
-      child.value.helloFromChild();
+    // イージングカテゴリ内でイージングを切り替える（ease-in→In Sine→...）
+    const switchEasingChild = (direction) => {
+      // console.log(direction);
+      // console.log(defaultEasingType.value);
     };
 
     return {
-      child,
       defaultEasingType,
-      defaultEasingType,
-      helloFromParent,
-      helloFromChild,
-      getEasingType,
-      getEasingPoints,
-      defaultEasingType,
+      defaultEasingName,
       defaultEasingPoints,
-      setEasing,
+      getEasingType,
+      getEasingName,
+      getEasingPoints,
+      setEasingType,
       setEasingName,
       setEasingPoints,
+      setEasing,
+      switchEasingChild,
     };
   },
 });

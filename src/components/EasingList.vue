@@ -2,44 +2,48 @@
   <div class="container">
     <ul class="list">
       <li
-        class="item"
+        :class="['item', item.isActive && 'is-active']"
         v-for="(item, index) in easingTypes"
         :key="index"
-        @click="onClickItem(index)"
+        @click="onClickItem(index, item)"
       >
-        <img :src="generateImgPath(item)" :alt="item" />
+        <img :src="generateImgPath(item.name)" :alt="item.name" />
       </li>
     </ul>
-    <!-- <button @click="emitEvent">Emit!</button> -->
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue';
+import { ref, defineComponent, watch } from 'vue';
 
 export default defineComponent({
-  emits: ['childEmit', 'switchEasing'],
+  emits: ['switchEasingCategory'],
+
   setup(props, { emit }) {
-    const emitEvent = () => {
-      emit('childEmit');
-    };
-
-    const helloFromChild = () => {
-      console.log('Hello from Child');
-    };
-
-    const easingTypes = ['ease-in-out', 'ease-in', 'ease-out'];
+    const easingTypes = ref([
+      { name: 'ease-in-out', isActive: true },
+      { name: 'ease-in', isActive: false },
+      { name: 'ease-out', isActive: false },
+    ]);
 
     const generateImgPath = (fileName) => {
       return new URL(`../assets/images/${fileName}.png`, import.meta.url).href;
     };
 
-    const onClickItem = (index) => {
-      emit('switchEasing', index);
+    const onClickItem = (index, item) => {
+      // is-active クラスを切り替える
+      if (item.isActive) {
+        return;
+      } else {
+        [...easingTypes.value].map((e) => {
+          return (e.isActive = false);
+        });
+        item.isActive = !item.isActive;
+      }
+
+      emit('switchEasingCategory', index);
     };
 
     return {
-      emitEvent,
-      helloFromChild,
       easingTypes,
       generateImgPath,
       onClickItem,
@@ -49,15 +53,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.container {
-  /* display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 40px;
-  width: 100%;
-  height: 100%; */
-}
 .list {
   display: flex;
   flex-direction: column;
@@ -79,6 +74,9 @@ export default defineComponent({
   height: 150px;
   cursor: pointer;
   transition: all 0.1s ease-out;
+}
+.item.is-active {
+  filter: invert(1);
 }
 
 .item:active {
