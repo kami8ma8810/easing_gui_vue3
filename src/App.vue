@@ -40,9 +40,7 @@ export default defineComponent({
     // });
 
     // ease-in-out/ease-in/ease-out のタイプを子コンポーネントのクリックイベントから取得
-    const getEasingType = (index, item) => {
-      console.log(index);
-      console.log(item);
+    const getEasingType = (index) => {
       const currentEasingType = easingLists[index];
       return currentEasingType;
     };
@@ -61,11 +59,11 @@ export default defineComponent({
     };
     const setEasingName = (index) => {
       defaultEasingName.value = getEasingName(index);
-      // console.log(defaultEasingName.value);
+      console.log(defaultEasingName.value);
     };
     const setEasingPoints = (index) => {
       defaultEasingPoints.value = getEasingPoints(index);
-      // console.log(defaultEasingPoints.value);
+      console.log(defaultEasingPoints.value);
     };
     const setEasing = (index) => {
       setEasingType(index);
@@ -75,8 +73,8 @@ export default defineComponent({
 
     // イージングカテゴリ内でイージングを切り替える（ease-in→In Sine→...）
     const switchEasingChild = (direction) => {
-      // console.log(direction);
-      // console.log(defaultEasingType.value);
+      console.log(direction);
+      console.log(defaultEasingType.value);
     };
 
     return {

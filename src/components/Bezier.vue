@@ -99,21 +99,11 @@ BezierCurve.prototype.draw = function (ctx, mouse) {
 };
 
 // 小数点以下を2桁までにする関数
-const roundToTwo = (num) => {
-  return +(Math.round(num + 'e+2') + 'e-2');
-};
-const recalc = (num) => {
-  return num;
-};
-
-// console.log(recalc(400));
-// 0-1の数値に変換する関数
-// const recalcArray = (array) => {
-//   return (
-// 		array.map((val,index,array)=>{
-
-// 	})
-// 	);
+// const roundToTwo = (num) => {
+//   return +(Math.round(num + 'e+2') + 'e-2');
+// };
+// const recalc = (num) => {
+//   return num;
 // };
 
 // 制御点情報
@@ -183,8 +173,8 @@ const initCanvas = (id) => {
   // 初期化
   const bezierField = new BezierCurve([
     [0, 500], //始点
-    [340, 320], //始点の制御点
-    [140, 160], //終点の制御点
+    [168, 500], //始点の制御点
+    [232, 100], //終点の制御点
     [400, 100], //終点
   ]);
 

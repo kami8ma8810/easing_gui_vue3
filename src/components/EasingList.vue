@@ -32,7 +32,7 @@ export default defineComponent({
     const onClickItem = (index, item) => {
       // is-active クラスを切り替える
       if (item.isActive) {
-        return;
+        return false;
       } else {
         [...easingTypes.value].map((e) => {
           return (e.isActive = false);
