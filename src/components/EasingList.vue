@@ -12,8 +12,9 @@
     </ul>
   </div>
 </template>
+
 <script>
-import { ref, defineComponent, watch } from 'vue';
+import { ref, defineComponent } from 'vue';
 
 export default defineComponent({
   emits: ['switchEasingCategory'],
@@ -30,12 +31,11 @@ export default defineComponent({
     };
 
     const onClickItem = (index, item) => {
-      // is-active クラスを切り替える
       if (item.isActive) {
         return false;
       } else {
-        [...easingTypes.value].map((e) => {
-          return (e.isActive = false);
+        [...easingTypes.value].map((value) => {
+          return (value.isActive = false);
         });
         item.isActive = !item.isActive;
       }
