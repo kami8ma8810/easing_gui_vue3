@@ -189,7 +189,7 @@ const initCanvas = (id) => {
 };
 
 onMounted(() => {
-  window.onload = () => initCanvas('canvas');
+  initCanvas('canvas');
 });
 </script>
 
